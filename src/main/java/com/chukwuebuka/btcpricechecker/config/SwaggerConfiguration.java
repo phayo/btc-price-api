@@ -14,12 +14,12 @@ public class SwaggerConfiguration {
         return new OpenAPI()
                 .info(
                         new Info()
-                                .title("Lunatech Movie Service")
-                                .description("Movie service based off of IMDB data")
+                                .title("WebFactory BTC price api")
+                                .description("Bitcoin price api")
                                 .version("1.0.0-SNAPSHOT").contact(new Contact().name("Chukwuebuka Anazodo").
-                                url("https://developer.lunatech.nl").email("chukwuebuka@lunatech.nl"))
+                                url("https://developer.webfactory.mk").email("chukwuebuka@webfactory.mk"))
                                 .license(
-                                        new License().name("LUNATECH LICENSE").url("https://license.lunatch.nl")
+                                        new License().name("WEBFACTORY LICENSE").url("https://license.webfactory.mk")
                                         )
                      );
     }
