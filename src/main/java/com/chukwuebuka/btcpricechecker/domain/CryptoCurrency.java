@@ -1,5 +1,6 @@
 package com.chukwuebuka.btcpricechecker.domain;
 
-public enum CryptoCurrency {
-    BTC
+public enum CryptoCurrency implements CurrencyCode {
+    BTC,
+    USD
 }
