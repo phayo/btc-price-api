@@ -1,4 +1,4 @@
-package com.chukwuebuka.btcpricechecker.event;
+package com.chukwuebuka.btcpricechecker.service.event;
 
 import org.springframework.context.ApplicationEvent;
 

@@ -1,7 +1,9 @@
-package com.chukwuebuka.btcpricechecker.dto.coindesk;
+package com.chukwuebuka.btcpricechecker.service.dto.coindesk;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.ToString;
 
+@ToString
 public class CoinDeskTime {
     private String updated;
 

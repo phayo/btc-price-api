@@ -1,13 +1,17 @@
-package com.chukwuebuka.btcpricechecker.dto.coindesk;
+package com.chukwuebuka.btcpricechecker.service.dto.coindesk;
 
 import com.chukwuebuka.btcpricechecker.domain.Currency;
+import com.chukwuebuka.btcpricechecker.domain.CurrencySymbol;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.ToString;
 
+@ToString
 public class CoinDeskCurrency implements Currency {
+    @JsonProperty("code")
     private CurrencySymbol code;
-
+    @JsonProperty("rate")
     private String rate;
-
+    @JsonProperty("description")
     private String description;
     @JsonProperty("rate_float")
     private double rateFloat;

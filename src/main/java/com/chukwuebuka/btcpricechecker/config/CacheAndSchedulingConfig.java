@@ -1,6 +1,6 @@
 package com.chukwuebuka.btcpricechecker.config;
 
-import com.chukwuebuka.btcpricechecker.event.UpdatePriceEvent;
+import com.chukwuebuka.btcpricechecker.service.event.UpdatePriceEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,8 +15,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Slf4j
 @Configuration
-@EnableCaching
-@EnableAsync
+@EnableCaching(proxyTargetClass=true)
+@EnableAsync(proxyTargetClass=true)
 @EnableScheduling
 public class CacheAndSchedulingConfig {
     @Autowired
