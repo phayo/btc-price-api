@@ -37,8 +37,9 @@ public class BitcoinPriceIndexService {
 
     public BpiCurrentPriceResponseDTO getCurrentPriceForCode(final String code) {
         log.info("Getting current price for code {}", code);
+        double price = bitcoinPriceIndexRepository.getBpi(code);
         CurrencySymbol symbol = CurrencySymbol.valueOf(code);
-        return  new BpiCurrentPriceResponseDTO(symbol, bitcoinPriceIndexRepository.getBpi(symbol));
+        return  new BpiCurrentPriceResponseDTO(symbol, price);
     }
 
     @Cacheable(value = "rangePriceCache")
