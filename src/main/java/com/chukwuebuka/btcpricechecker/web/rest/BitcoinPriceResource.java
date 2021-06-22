@@ -38,7 +38,7 @@ public class BitcoinPriceResource {
     @GetMapping("/range/{code}")
     public ResponseEntity<?> getCurrentPrice(@RequestParam(name = "startDate") String startDate,
                                              @RequestParam(name = "endDate") String endDate,
-                                             @RequestParam(name = "code", defaultValue = "USD") String code){
+                                             @PathVariable("code") String code){
         log.info("REST call to get bitcoin price between dates{} and {}", startDate, endDate);
         if(code.isEmpty() || p.matcher(code).find()){
             throw new IllegalArgumentException("Code " + code + " must be a valid currency");

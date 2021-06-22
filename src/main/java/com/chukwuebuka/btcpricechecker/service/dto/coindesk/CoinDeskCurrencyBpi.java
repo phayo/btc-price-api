@@ -3,19 +3,20 @@ package com.chukwuebuka.btcpricechecker.service.dto.coindesk;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.chukwuebuka.btcpricechecker.domain.Currency;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
-public class CoinDeskBpi {
-    private final Map<String, Object> properties = new HashMap<>();
+public class CoinDeskCurrencyBpi {
+    private final Map<String, CoinDeskCurrency> properties = new HashMap<>();
 
     @JsonAnyGetter
-    public Map<String, Object> getProperties() {
+    public Map<String, CoinDeskCurrency> getProperties() {
         return this.properties;
     }
 
     @JsonAnySetter
-    public void add(String key, Object value) {
+    public void add(String key, CoinDeskCurrency value) {
         this.properties.put(key, value);
     }
 
@@ -26,6 +27,6 @@ public class CoinDeskBpi {
                                              .append("=")
                                              .append(value)
                                              .append(", "));
-        return "CoinDeskBpi{" + "properties=" + sb.toString() + '}';
+        return "CoinDeskCurrencyBpi{" + "properties=" + sb.toString() + '}';
     }
 }

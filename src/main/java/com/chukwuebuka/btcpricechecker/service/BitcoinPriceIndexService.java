@@ -3,6 +3,7 @@ package com.chukwuebuka.btcpricechecker.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 import com.chukwuebuka.btcpricechecker.domain.CurrencySymbol;
@@ -25,6 +26,8 @@ public class BitcoinPriceIndexService {
     private String btcPriceExternalApiBaseUrl;
     @Value("${api.crypto.btc.price.url.range.price.path}")
     private String bpiRangePricePath;
+    @Value("${max.date.difference}")
+    private int maxDateRangeInDays;
 
     public BitcoinPriceIndexService(final BitcoinPriceIndexRepository bitcoinPriceIndexRepository, final AbstractBitcoinPriceIndexAPIService bitcoinPriceIndexAPIService) {
         this.bitcoinPriceIndexRepository = bitcoinPriceIndexRepository;
@@ -41,22 +44,12 @@ public class BitcoinPriceIndexService {
     @Cacheable(value = "rangePriceCache")
     public BitcoinPriceRangeResponseDTO getPriceBetweenRange(final String code, final String startDate,
                                                              final String endDate) {
-        Date start;
-        Date end;
-        try{
-            start = dateFormat.parse(startDate);
-            end = dateFormat.parse(endDate);
-        }catch (ParseException ex){
-            log.error("Exception encountered during date formatting of either {} or {} or both", startDate, endDate);
-            throw new IllegalArgumentException("Start and end date must be of format 'yyyy-MM-dd'");
-        }
+        validateCode(code);
+        Map<String, Date> dateMap = validateDateFormat(startDate, endDate);
+        Date start = dateMap.get("start");
+        Date end = dateMap.get("end");
+        validateDateRange(start, end);
 
-        try{
-            CurrencySymbol.valueOf(code);
-        }catch (IllegalArgumentException ex){
-            log.error("Currency code {} does not match any currency symbol", code);
-            throw new ResourceNotFoundException("Currency code " + code + " not found");
-        }
         log.info("Service call to fetch price between range");
         String url = btcPriceExternalApiBaseUrl + bpiRangePricePath;
         Optional<BitcoinPriceRangeResponseDTO> priceRangeResponseDTO =
@@ -65,5 +58,34 @@ public class BitcoinPriceIndexService {
                                                                                                            "found"));
 
         return priceRangeResponseDTO.get();
+    }
+
+    private Map<String, Date> validateDateFormat(final String startDate, final String endDate) {
+
+        try{
+            return Map.of("start", dateFormat.parse(startDate), "end", dateFormat.parse(endDate));
+        }catch (ParseException ex){
+            log.error("Exception encountered during date formatting of either {} or {} or both", startDate, endDate);
+            throw new IllegalArgumentException("Start and end date must be of format 'yyyy-MM-dd'");
+        }
+    }
+
+    private void validateCode(String code) {
+        try{
+            CurrencySymbol.valueOf(code);
+        }catch (IllegalArgumentException ex){
+            log.error("Currency code {} does not match any currency symbol", code);
+            throw new ResourceNotFoundException("Currency code " + code + " not found");
+        }
+    }
+
+    private void validateDateRange(final Date start, final Date end) {
+        if(start.after(end)){
+            throw new IllegalArgumentException("Start date must be before end date");
+        }
+        long dayDifference = (end.getTime() - start.getTime()) / (1000 * 86400);
+        if(dayDifference > maxDateRangeInDays){
+            throw new IllegalArgumentException("Date difference should not be more than " + maxDateRangeInDays + " days");
+        }
     }
 }

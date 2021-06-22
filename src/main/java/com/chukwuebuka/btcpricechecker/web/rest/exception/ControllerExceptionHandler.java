@@ -1,5 +1,8 @@
 package com.chukwuebuka.btcpricechecker.web.rest.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,27 +18,36 @@ public class ControllerExceptionHandler extends RuntimeException{
     protected ResponseEntity<Object> handleGeneralException(
             RuntimeException ex, WebRequest request) {
         String bodyOfResponse = "Unexpected Error occurred";
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("success", false);
+        responseBody.put("message", bodyOfResponse);
         LOG.error(ex.getMessage());
         ex.printStackTrace();
-        return new ResponseEntity<>(bodyOfResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = { IllegalArgumentException.class })
     protected ResponseEntity<Object> handleBadRequestException(
             RuntimeException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("success", false);
+        responseBody.put("message", bodyOfResponse);
         LOG.error(ex.getMessage());
         ex.printStackTrace();
-        return new ResponseEntity<>(bodyOfResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = { ResourceNotFoundException.class })
     protected ResponseEntity<Object> handleResourceNotFoundException(
             RuntimeException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("success", false);
+        responseBody.put("message", bodyOfResponse);
         LOG.error(ex.getMessage());
         ex.printStackTrace();
-        return new ResponseEntity<>(bodyOfResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
     }
 }
 

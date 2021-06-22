@@ -7,9 +7,7 @@ import lombok.ToString;
 
 @ToString
 @Getter@Setter
-public class CoinDeskApiResponse {
-    @JsonProperty("time")
-    private CoinDeskTime time;
-    @JsonProperty("disclaimer")
-    private String disclaimer;
+public class CoinDeskRangeApiResponse extends CoinDeskApiResponse{
+    @JsonProperty("bpi")
+    private CoinDeskRangeBpi bpi;
 }

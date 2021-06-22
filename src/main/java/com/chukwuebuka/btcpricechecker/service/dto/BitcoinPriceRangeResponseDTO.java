@@ -7,5 +7,5 @@ import lombok.Data;
 
 @Data@AllArgsConstructor
 public class BitcoinPriceRangeResponseDTO {
-    private Map<String, Object> prices;
+    private Map<String, Double> prices;
 }

@@ -10,7 +10,8 @@ import com.chukwuebuka.btcpricechecker.domain.Currency;
 import com.chukwuebuka.btcpricechecker.domain.CurrencySymbol;
 import com.chukwuebuka.btcpricechecker.repository.BitcoinPriceIndexRepository;
 import com.chukwuebuka.btcpricechecker.service.dto.BitcoinPriceRangeResponseDTO;
-import com.chukwuebuka.btcpricechecker.service.dto.coindesk.CoinDeskApiResponse;
+import com.chukwuebuka.btcpricechecker.service.dto.coindesk.CoinDeskCurrencyApiResponse;
+import com.chukwuebuka.btcpricechecker.service.dto.coindesk.CoinDeskRangeApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -46,14 +47,14 @@ public abstract class AbstractBitcoinPriceIndexAPIService {
 
     private Currency getLatestPrice(URI uri, CurrencySymbol currencySymbol){
 
-        ResponseEntity<CoinDeskApiResponse> currencyResponse
-                = restTemplate.getForEntity(uri, CoinDeskApiResponse.class);
+        ResponseEntity<CoinDeskCurrencyApiResponse> currencyResponse
+                = restTemplate.getForEntity(uri, CoinDeskCurrencyApiResponse.class);
         log.info("Response gotten from API: {}", currencyResponse);
         if(currencyResponse.getStatusCode().is2xxSuccessful()) {
-            CoinDeskApiResponse coinDeskApiResponse = currencyResponse.getBody();
-            return (Currency) coinDeskApiResponse.getBpi()
-                                                 .getProperties()
-                                                 .get(currencySymbol.toString());
+            CoinDeskCurrencyApiResponse coinDeskApiResponse = currencyResponse.getBody();
+            return coinDeskApiResponse.getBpi()
+                                         .getProperties()
+                                         .get(currencySymbol.toString());
         }
         return null;
     }
@@ -72,17 +73,17 @@ public abstract class AbstractBitcoinPriceIndexAPIService {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
                                                            .queryParam("start", startDateString)
                                                            .queryParam("end", endDateString);
-        ResponseEntity<CoinDeskApiResponse> response = restTemplate.exchange(
+        ResponseEntity<CoinDeskRangeApiResponse> response = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.GET,
                 entity,
-                CoinDeskApiResponse.class);
+                CoinDeskRangeApiResponse.class);
         log.info("Date range BPI response {}", response);
 
         if(response.getStatusCode()
                    .is2xxSuccessful()){
-            CoinDeskApiResponse coinDeskApiResponse = response.getBody();
-            Map<String, Object> prices = coinDeskApiResponse.getBpi().getProperties();
+            CoinDeskRangeApiResponse coinDeskCurrencyApiResponse = response.getBody();
+            Map<String, Double> prices = coinDeskCurrencyApiResponse.getBpi().getProperties();
             return Optional.of(new BitcoinPriceRangeResponseDTO(prices));
         }
 
