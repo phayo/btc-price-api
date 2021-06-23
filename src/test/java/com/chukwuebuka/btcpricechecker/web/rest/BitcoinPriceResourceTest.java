@@ -48,14 +48,36 @@ class BitcoinPriceResourceTest {
     void givenNonExistingCurrencyCode_shouldNotFound() throws Exception {
         mockMvc.perform(get("/price/current-price/NGN"))
                .andExpect(status().isNotFound())
-               .andExpect((content().contentType(MediaType.APPLICATION_JSON_VALUE)))
+               .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                .andExpect(jsonPath("$.success").exists())
                .andExpect(jsonPath("$.message").exists());
     }
 
-    //@Test
-    void testGetCurrentPrice() throws Exception {
-        mockMvc.perform(get("/movie")
-                                .queryParam("title", "The Wolf Of Wall Street b"));
+    @Test
+    void givenValidCurrencyCodeAndDates_canGetPriceRange() throws Exception {
+        mockMvc.perform(get("/price/range/USD")
+                                .queryParam("startDate", "2020-01-01")
+                                .queryParam("endDate", "2020-01-15"))
+               .andExpect(status().isOk())
+               .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+               .andExpect(jsonPath("$.prices").exists());
+    }
+
+    @Test
+    void givenValidCurrencyCodeAndWrongDateFormat_shouldReturnBadRequest() throws Exception {
+        mockMvc.perform(get("/price/range/USD")
+                                .queryParam("startDate", "2020/01/01")
+                                .queryParam("endDate", "2020/01/15"))
+               .andExpect(status().isBadRequest())
+               .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+    }
+
+    @Test
+    void givenInvalidCurrencyCodeRightDates_shouldReturnBadRequest() throws Exception {
+        mockMvc.perform(get("/price/range/***")
+                                .queryParam("startDate", "2020-01-01")
+                                .queryParam("endDate", "2020-01-15"))
+               .andExpect(status().isBadRequest())
+               .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
     }
 }
