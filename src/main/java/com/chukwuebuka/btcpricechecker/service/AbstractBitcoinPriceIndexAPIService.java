@@ -45,7 +45,7 @@ public abstract class AbstractBitcoinPriceIndexAPIService {
             priceIndexRepository.updateBpi(currency.getCode(), currency.getRateFloat());
     }
 
-    private Currency getLatestPrice(URI uri, CurrencySymbol currencySymbol){
+    protected Currency getLatestPrice(URI uri, CurrencySymbol currencySymbol){
 
         ResponseEntity<CoinDeskCurrencyApiResponse> currencyResponse
                 = restTemplate.getForEntity(uri, CoinDeskCurrencyApiResponse.class);
