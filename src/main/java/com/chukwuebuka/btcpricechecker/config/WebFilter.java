@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class WebFilter implements Filter {
 
     private final String DOCUMENTATION_URL = "/swagger-ui.html";
